@@ -14,11 +14,12 @@
         >
 
         <ImageButton
+            android:id="@+id/prevButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="fitCenter"
-            android:src="@mipmap/prev"
             android:onClick="onBtnPrev"
+            android:background="@drawable/sel_prev"
         />
         <TextView
             android:id="@+id/pageText"
@@ -31,10 +32,11 @@
             android:text="1/5"
         />
         <ImageButton
+            android:id="@+id/nextButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="fitCenter"
-            android:src="@mipmap/next"
+            android:background="@drawable/sel_next"
             android:onClick="onBtnNext"
         />
     </LinearLayout>
