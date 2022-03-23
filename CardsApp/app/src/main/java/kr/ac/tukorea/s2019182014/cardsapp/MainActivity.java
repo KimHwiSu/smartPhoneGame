@@ -4,12 +4,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collector;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton previousImageButton;
     private int flips;
     private TextView scoreTextView;
+    private int openCardCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +52,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startGame() {
+
+        Random r = new Random();
+        for(int i=0; i<resIds.length; i++){
+            int t = r.nextInt(resIds.length);
+            int id = resIds[t];
+            resIds[t] = resIds[i];
+            resIds[i] = id;
+        }
+
+        openCardCount = resIds.length;
         for(int i=0; i < BUTTON_IDS.length; i++){
             ImageButton btn = findViewById(BUTTON_IDS[i]);
             int resId = resIds[i];
-//            btn.setImageResource(resId);
+            btn.setImageResource(R.mipmap.card_blue_back);
+            btn.setVisibility(View.VISIBLE);
             btn.setTag(resId);
+            // 할일 : 뒤집힌거 다시 뒤집기, 랜덤 섞기
         }
+        setScore(0);
+        previousImageButton = null;
     }
 
     public void onBtnRestart(View view){
@@ -57,15 +81,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void askRetry() {
         new AlertDialog.Builder(this)
-            .setTitle("Restart?")
-            .setMessage("Do you really want to restart Game?")
-            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            .setTitle(R.string.restart)
+            .setMessage(R.string.restart_alert_msg)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     startGame();
                 }
         })
-            .setNegativeButton("No", null)
+            .setNegativeButton(R.string.no, null)
             .create()
             .show();
     }
@@ -80,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (previousImageButton == view) {
             Log.d(TAG, "Same Image button");
+            Toast.makeText(this, R.string.same_card, Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -90,6 +115,10 @@ public class MainActivity extends AppCompatActivity {
                 imageButton.setVisibility(View.INVISIBLE);
                 previousImageButton.setVisibility(View.INVISIBLE);
                 previousImageButton = null;
+                openCardCount -= 2;
+                if(openCardCount == 0){
+                    askRetry();
+                }
             } else {
                 imageButton.setImageResource(resId);
                 setScore(flips + 1);
@@ -105,7 +134,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setScore(int score) {
         flips = score;
-        String text = "Flips: " + flips;
+        Resources res = getResources();
+        String format =res.getString(R.string.flip_fmt);
+        String text = String.format(format, score);
         scoreTextView.setText(text);
     }
 
