@@ -15,6 +15,8 @@
 ## 예상 실행 흐름
 ### 비슷한 게임
 ![image](https://user-images.githubusercontent.com/58390829/160202322-833a5371-701d-4256-870c-141a53883c31.png)
+#### 다른 점?  
+-> 스킬 X, 구르기 및 점프 회피
 ### UI 구성
 ![image](https://user-images.githubusercontent.com/58390829/160200811-01e7136c-eb4c-4794-981f-5c64f195acc2.png)
 1. 플레이어 체력
