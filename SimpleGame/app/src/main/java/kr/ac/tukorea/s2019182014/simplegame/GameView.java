@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.View;
 
 /*
@@ -19,38 +20,46 @@ import android.view.View;
 ...
  */
 
-public class GameView extends View {
+public class GameView extends View implements Choreographer.FrameCallback{
     private static final String TAG = GameView.class.getSimpleName();
-    private final Handler handler;
-    private int ballDx, ballDy;
+    //private final Handler handler;
+    private int ballDx_1, ballDy_1;
+    private int ballDx_2, ballDy_2;
     private Bitmap soccoerBitmap;
     private Rect srcRect = new Rect();
-    private Rect dstRect = new Rect();
-    private long lastTimeMillis;
+    private Rect dstRect_1 = new Rect();
+    private Rect dstRect_2 = new Rect();
+    private long lastTimeNanos;
     private int framePerSecond;
     private Paint fpsPaint = new Paint();
 
     public GameView(Context context, AttributeSet as) {
         super(context, as);
         initView();
-        
-        handler = new Handler();
-        updateGame();
+
+        Choreographer.getInstance().postFrameCallback(this);
     }
 
-    private void updateGame() {
-        long now = System.currentTimeMillis();
-        int elapsed = (int) (now - lastTimeMillis);
-        framePerSecond = 1000 / elapsed;
-        lastTimeMillis = now;
+    @Override
+    public void doFrame(long currentTimeNanos) {
+
+        long now = currentTimeNanos;
+        int elapsed = (int) (now - lastTimeNanos);
+        if(elapsed == 0){
+            Choreographer.getInstance().postFrameCallback(this);
+            return;
+        }
+        framePerSecond = 1_000_000_000 / elapsed;
+        lastTimeNanos = now;
         update();
         invalidate();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateGame();
-            }
-        }, 30);
+//        postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                updateGame();
+//            }
+//        }, 30);
+        Choreographer.getInstance().postFrameCallback(this);
     }
 
 
@@ -58,9 +67,10 @@ public class GameView extends View {
         Resources res = getResources();
         soccoerBitmap = BitmapFactory.decodeResource(res, R.mipmap.soccer_ball_240);
         srcRect.set(0, 0, soccoerBitmap.getWidth(), soccoerBitmap.getHeight());
-        dstRect.set(0, 0, 100, 100);
-        
-        ballDx = 10; ballDy = 10;
+        dstRect_1.set(0, 0, 100, 100);
+        dstRect_2.set(0,500, 100, 600);
+        ballDx_1 = 10; ballDy_1 = 10;
+        ballDx_2 = 5; ballDy_2 = 5;
         
         fpsPaint.setColor(Color.BLUE);
         fpsPaint.setTextSize(50);
@@ -69,27 +79,44 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
     //    super.onDraw(canvas);
-        canvas.drawBitmap(soccoerBitmap, srcRect, dstRect, null);
+        canvas.drawBitmap(soccoerBitmap, srcRect, dstRect_1, null);
+        canvas.drawBitmap(soccoerBitmap, srcRect, dstRect_2, null);
         canvas.drawText("" + framePerSecond, 0, 100, fpsPaint);
         //        canvas.drawText(String.valueOf(framePerSecond), 0, 0, fpsPaint);
         Log.d(TAG, "onDraw()");
     }
 
     private void update() {
-        dstRect.offset(ballDx, ballDy);
-        if(dstRect.left < 0){
-            ballDx = 10;
+        dstRect_1.offset(ballDx_1, ballDy_1);
+        if(dstRect_1.left < 0){
+            ballDx_1 = -ballDx_1;
         }
-        else if(dstRect.right > getWidth()){
-            ballDx *= -1;
+        else if(dstRect_1.right > getWidth()){
+            ballDx_1 = -ballDx_1;
         }
 
-        if(dstRect.top < 0){
-            ballDy = 10;
+        if(dstRect_1.top < 0){
+            ballDy_1 = -ballDy_1;
         }
-        else if(dstRect.bottom > getHeight()){
-            ballDy *= -1;
+        else if(dstRect_1.bottom > getHeight()){
+            ballDy_1 = -ballDy_1;
         }
+
+        dstRect_2.offset(ballDx_2, ballDy_2);
+        if(dstRect_2.left < 0){
+            ballDx_2 = -ballDx_2;
+        }
+        else if(dstRect_2.right > getWidth()){
+            ballDx_2 = -ballDx_2;
+        }
+
+        if(dstRect_2.top < 0){
+            ballDy_2 = -ballDy_2;
+        }
+        else if(dstRect_2.bottom > getHeight()){
+            ballDy_2 = -ballDy_2;
+        }
+
     }
 
 
