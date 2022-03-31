@@ -1,4 +1,4 @@
-package kr.ac.tukorea.s2019182014.morecontrolos;
+package kr.ac.tukorea.s2019182014.simplegame;
 
 import org.junit.Test;
 
