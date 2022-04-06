@@ -42,14 +42,14 @@ public class Ball implements GameObject{
         if(dstRect.left < 0){
             dx = -dx;
         }
-        else if(dstRect.right > GameView.view.getWidth()){
+        else if(dstRect.right > Matrics.width){
             dx = -dx;
         }
 
         if(dstRect.top < 0){
             dy = -dy;
         }
-        else if(dstRect.bottom > GameView.view.getHeight()){
+        else if(dstRect.bottom > Matrics.height){
             dy = -dy;
         }
     }
