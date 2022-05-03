@@ -4,13 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 
 import java.util.ArrayList;
 
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BoxCollidable;
-import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.CollisionHelper;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.GameObject;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.GameView;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.Metrics;
@@ -40,10 +39,10 @@ public class MainGame {
 
         gameObjects.clear();
 
-        gameObjects.add(new EnemyGenerator());
+        //gameObjects.add(new EnemyGenerator());
 
         float fx = Metrics.width / 2;
-        float fy = Metrics.height - Metrics.size(R.dimen.fighter_y_offset);
+        float fy = Metrics.height - Metrics.size(R.dimen.player_y_offset);
         player = new Player(fx, fy);
         gameObjects.add(player);
 
@@ -52,21 +51,28 @@ public class MainGame {
         collisionPaint.setColor(Color.RED);
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event, View moveButton, View behaviorBtn) {
         int action = event.getAction();
+
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                float x = event.getX();
-                float y = event.getY();
-                player.setTargetPosition(x, y);
-//                if (action == MotionEvent.ACTION_DOWN) {
-//                    fighter.fire();
-//                }
+                if((moveButton!=null)&&moveButton.isPressed()) {
+                    switch (moveButton.getId()) {
+                        case R.id.leftBtn:
+                            player.setDirection(false);
+                            player.setPosition(player.getX(), player.getY());
+                            break;
+                        case R.id.rightBtn:
+                            player.setDirection(true);
+                            player.setPosition(player.getX(), player.getY());
+                            break;
+                    }
+                }
                 return true;
         }
         return false;
     }
+
 
     public void draw(Canvas canvas) {
         for (GameObject gobj : gameObjects) {
@@ -84,10 +90,10 @@ public class MainGame {
             gobj.update();
         }
 
-        checkCollision();
+        //checkCollision();
     }
 
-    private void checkCollision() {
+    /*private void checkCollision() {
         for (GameObject o1 : gameObjects) {
             if (!(o1 instanceof Player)) {
                 continue;
@@ -112,8 +118,8 @@ public class MainGame {
             }
             // check enemy vs fighter
         }
-    }
-
+    }*/
+//
     public void add(GameObject gameObject) {
         GameView.view.post(new Runnable() {
             @Override
@@ -131,8 +137,8 @@ public class MainGame {
             }
         });
     }
-
-    public int objectCount() {
-        return gameObjects.size();
-    }
+//
+//    public int objectCount() {
+//        return gameObjects.size();
+//    }
 }

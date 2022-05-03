@@ -23,6 +23,9 @@ public class GameView extends View implements Choreographer.FrameCallback {
     private boolean initialized;
     private boolean running;
 
+    public View moveBtn;
+    public View behaviorBtn;
+
     public GameView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         view = this;
@@ -68,7 +71,7 @@ public class GameView extends View implements Choreographer.FrameCallback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return MainGame.getInstance().onTouchEvent(event);
+        return MainGame.getInstance().onTouchEvent(event, moveBtn, behaviorBtn);
     }
 
     @Override
@@ -76,7 +79,6 @@ public class GameView extends View implements Choreographer.FrameCallback {
         MainGame.getInstance().draw(canvas);
 
         canvas.drawText("FPS:" + framesPerSecond, framesPerSecond * 10, 100, fpsPaint);
-        canvas.drawText("" + MainGame.getInstance().objectCount(), 10, 100, fpsPaint);
     }
 
     public void pauseGame() {

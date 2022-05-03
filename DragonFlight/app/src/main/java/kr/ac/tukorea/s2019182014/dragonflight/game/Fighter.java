@@ -81,7 +81,10 @@ public class Fighter extends Sprite {
     }
 
     public void fire() {
-        Bullet bullet = new Bullet(x, y, (float) (-Math.PI/2));
-        MainGame.getInstance().add(bullet);
+        int score = MainGame.getInstance().score.get();
+        if (score > 100000) score = 100000;
+        float power = 10 + score / 1000;
+        Bullet bullet = Bullet.get(x, y, power);
+        MainGame.getInstance().add(MainGame.Layer.bullet, bullet);
     }
 }

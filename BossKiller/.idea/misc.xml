@@ -3,7 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/82104/AndroidStudioProjects/BossKiller/app/src/main/res/layout/activity_main.xml" value="0.19947916666666668" />
+        <entry key="..\:/Users/82104/AndroidStudioProjects/BossKiller/app/src/main/res/drawable/btn_attack.xml" value="0.1985" />
+        <entry key="..\:/Users/82104/AndroidStudioProjects/BossKiller/app/src/main/res/drawable/btn_jump.xml" value="0.1985" />
+        <entry key="..\:/Users/82104/AndroidStudioProjects/BossKiller/app/src/main/res/drawable/btn_left.xml" value="0.1985" />
+        <entry key="..\:/Users/82104/AndroidStudioProjects/BossKiller/app/src/main/res/drawable/btn_right.xml" value="0.1985" />
+        <entry key="..\:/Users/82104/AndroidStudioProjects/BossKiller/app/src/main/res/drawable/btn_roll.xml" value="0.1985" />
+        <entry key="..\:/Users/82104/AndroidStudioProjects/BossKiller/app/src/main/res/layout/activity_main.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -10,7 +10,6 @@ public class AnimSprite extends Sprite {
     private final int imageHeight;
 
     private Rect srcRect = new Rect();
-    //    private float time;
     private long createdOn;
 
     public AnimSprite(float x, float y, float w, float h, int bitmapResId, float framesPerSecond, int frameCount) {
