@@ -18,6 +18,7 @@ public class Player extends AnimSprite {
     private static final String TAG = Player.class.getSimpleName();
     private float x, y;
     private float dx, dy;
+    private boolean isChanged;
 
     public Player(float x, float y) {
         super(x, y, size, size, R.mipmap.player_idle, FRAMES_PER_SECOND, 4);
@@ -57,9 +58,17 @@ public class Player extends AnimSprite {
     public void setDirection(boolean isRight){
         if(isRight){
             dx = 300.f;
+            if(isChanged){
+                changeDirect();
+                isChanged = false;
+            }
         }
         else{
             dx = -300.f;
+            if(!isChanged) {
+                changeDirect();
+                isChanged = true;
+            }
         }
     }
 
