@@ -38,7 +38,14 @@ public class AnimSprite extends Sprite {
         long now = System.currentTimeMillis();
         float time = (now - createdOn) / 1000.0f;
         int index = Math.round(time * framesPerSecond) % frameCount;
-        srcRect.set(index * imageWidth, 0, (index + 1) * imageWidth, imageHeight);
-        canvas.drawBitmap(bitmap, srcRect, dstRect, null);
+        if(!isReverse) {
+            srcRect.set(index * imageWidth, 0, (index + 1) * imageWidth, imageHeight);
+            canvas.drawBitmap(bitmap, srcRect, dstRect, null);
+        }
+        else{
+            index = (frameCount-1) - index;
+            srcRect.set(index * imageWidth, 0, (index + 1) * imageWidth, imageHeight);
+            canvas.drawBitmap(reverseBitmap, srcRect, dstRect, null);
+        }
     }
 }
