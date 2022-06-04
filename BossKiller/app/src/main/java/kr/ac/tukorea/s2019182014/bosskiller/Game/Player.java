@@ -1,11 +1,14 @@
 package kr.ac.tukorea.s2019182014.bosskiller.Game;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.os.Debug;
 import android.util.Log;
+import android.view.View;
 
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.AnimSprite;
+import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BitmapPool;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.GameView;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.Metrics;
@@ -19,6 +22,9 @@ public class Player extends AnimSprite {
     private float x, y;
     private float dx, dy;
     private boolean isChanged;
+    public boolean move = false;
+    public boolean behavior = false;
+    public int behaviorFrame = 0;
 
     public Player(float x, float y) {
         super(x, y, size, size, R.mipmap.player_idle, FRAMES_PER_SECOND, 4);
@@ -27,6 +33,16 @@ public class Player extends AnimSprite {
 
     @Override
     public void update() {
+        if (!behavior) {
+            if (move) {
+                this.changeBitmap(R.mipmap.player_move);
+                changeFrameCount(3);
+            } else {
+                this.changeBitmap(R.mipmap.player_idle);
+                changeFrameCount(4);
+            }
+
+        }
         float frameTime = MainGame.getInstance().frameTime;
 
         if((GameView.view.moveBtn!=null)&&GameView.view.moveBtn.isPressed()) {
@@ -36,11 +52,32 @@ public class Player extends AnimSprite {
         }
     }
 
+    public void attack(){
+        changeBitmap(R.mipmap.player_attack);
+        behaviorFrame = 4;
+        changeFrameCount(behaviorFrame);
+    }
+
+    public void jump(){
+        changeBitmap(R.mipmap.player_jump);
+        behaviorFrame = 5;
+        changeFrameCount(behaviorFrame);
+    }
+    public void roll(){
+        changeBitmap(R.mipmap.player_roll);
+        behaviorFrame = 5;
+        changeFrameCount(behaviorFrame);
+    }
+
+
+
+
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
     }
+
 
     public void setPosition(float x, float y){
         this.x = x;

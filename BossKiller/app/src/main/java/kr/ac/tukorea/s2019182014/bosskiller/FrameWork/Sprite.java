@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 
+import kr.ac.tukorea.s2019182014.bosskiller.R;
+
 public class Sprite implements GameObject {
     protected Bitmap bitmap;
     protected RectF dstRect = new RectF();
@@ -45,6 +47,13 @@ public class Sprite implements GameObject {
 
     public void setDstRect(float width, float height) {
         dstRect.set(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
+    }
+
+    public void changeBitmap(int bitmapId){
+        Bitmap bit = BitmapPool.get(bitmapId);
+        bitmap = bit;
+        reverseBitmap = reverseBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+
     }
 
     public void changeDirect(){

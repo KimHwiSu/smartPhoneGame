@@ -4,9 +4,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.security.Key;
 import java.util.ArrayList;
 
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BoxCollidable;
@@ -56,7 +58,9 @@ public class MainGame {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+            {
                 if((moveButton!=null)&&moveButton.isPressed()) {
+                    player.move = true;
                     switch (moveButton.getId()) {
                         case R.id.leftBtn:
                             player.setDirection(false);
@@ -67,9 +71,37 @@ public class MainGame {
                             player.setPosition(player.getX(), player.getY());
                             break;
                     }
+
+                }
+                else if((behaviorBtn!=null)&&behaviorBtn.isPressed()){
+                    player.setIndex();
+                    if(player.move){
+                        player.move = false;
+                    }
+                    player.behavior = true;
+                    switch (behaviorBtn.getId()){
+                        case R.id.attackBtn:
+                            player.attack();
+                            break;
+                        case R.id.jumpBtn:
+                            player.jump();
+                            break;
+                        case R.id.rollBtn:
+                            player.roll();
+                            break;
+                    }
                 }
                 return true;
+            }
+            case MotionEvent.ACTION_UP: {
+                if (player.move) {
+                    player.move = false;
+                }
+            }
+            return true;
         }
+
+
         return false;
     }
 
