@@ -33,23 +33,35 @@ public class Player extends AnimSprite {
 
     @Override
     public void update() {
+        float frameTime = MainGame.getInstance().frameTime;
+
         if (!behavior) {
             if (move) {
                 this.changeBitmap(R.mipmap.player_move);
                 changeFrameCount(3);
+
+                if((GameView.view.moveBtn!=null)&&GameView.view.moveBtn.isPressed()) {
+                    float dx = this.dx * frameTime;
+                    x += dx;
+                    dstRect.offset(dx, 0);
+                }
             } else {
                 this.changeBitmap(R.mipmap.player_idle);
                 changeFrameCount(4);
             }
 
         }
-        float frameTime = MainGame.getInstance().frameTime;
-
-        if((GameView.view.moveBtn!=null)&&GameView.view.moveBtn.isPressed()) {
-            float dx = this.dx * frameTime;
-            x += dx;
-            dstRect.offset(dx, 0);
+        else{
+            Log.d(TAG, String.valueOf(isReverse));
+            Log.d(TAG, String.valueOf(returnIdex()));
+            if(returnIdex() == (behaviorFrame-1)){
+                behavior = false;
+                changeBitmap(R.mipmap.player_idle);
+                changeFrameCount(4);
+            }
         }
+
+
     }
 
     public void attack(){
