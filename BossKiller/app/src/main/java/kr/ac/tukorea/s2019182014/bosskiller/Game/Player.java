@@ -32,6 +32,7 @@ public class Player extends AnimSprite implements BoxCollidable {
     public String state;
     private RectF collisionBox = new RectF();
 
+    public int life = 3;
     public Player(float x, float y) {
         super(x, y, size, size, R.mipmap.player_idle, FRAMES_PER_SECOND, 4);
         setPosition(x, y);
@@ -42,6 +43,7 @@ public class Player extends AnimSprite implements BoxCollidable {
         collisionBox.offset(-20.f, 55.f);
         jumpPower = Metrics.size(R.dimen.player_jump_power);
         gravity = Metrics.size(R.dimen.player_gravity);
+
     }
 
     @Override
@@ -168,6 +170,10 @@ public class Player extends AnimSprite implements BoxCollidable {
 
 
     public void hit(){
+        life -= 1;
+        if(life == 0){
+            life = 3;
+        }
         state = "hit";
         changeBitmap(R.mipmap.player_hit);
         behaviorFrame = 5;

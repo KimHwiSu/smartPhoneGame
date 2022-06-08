@@ -45,16 +45,16 @@ public class MobAttackEffect extends AnimSprite implements BoxCollidable {
                    dstRect.left = this.x - this.radius;
                    dstRect.right = this.x + this.radius;
                    collisionBox.set(dstRect);
-                    collisionBox.inset(264, 264);
-                    collisionBox.offset(85, 22);
+                    collisionBox.inset(200, 234);
+                    collisionBox.offset(50, 22);
                 }
                 else{
                     this.x = m.x-10.f;
                     dstRect.left = this.x - this.radius;
                     dstRect.right = this.x + this.radius;
                     collisionBox.set(dstRect);
-                    collisionBox.inset(264, 264);
-                    collisionBox.offset(-85, 22);
+                    collisionBox.inset(200, 234);
+                    collisionBox.offset(-50, 22);
                 }
                 break;
             }

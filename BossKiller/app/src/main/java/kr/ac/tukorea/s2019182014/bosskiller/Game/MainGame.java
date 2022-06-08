@@ -23,14 +23,13 @@ public class MainGame {
     private static MainGame singleton;
     private Paint collisionPaint;
     private MobAttackEffect mobAE;
-
+    private Life l;
     public static MainGame getInstance() {
         if (singleton == null) {
             singleton = new MainGame();
         }
         return singleton;
     }
-    private static final int BALL_COUNT = 10;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private Player player;
     private Mob mob;
@@ -47,6 +46,7 @@ public class MainGame {
         collisionPaint.setStyle(Paint.Style.STROKE);
         collisionPaint.setColor(Color.RED);
 
+        showsBoxCollidables = false;
         gameObjects.clear();
 
         //gameObjects.add(new EnemyGenerator());
@@ -58,6 +58,8 @@ public class MainGame {
         mobAE = new MobAttackEffect(fx, fy, mob);
         attackEffect = new SwordEnergy(player);
 
+        l = new Life(100, 100);
+        gameObjects.add(l);
         gameObjects.add(mobAE);
         gameObjects.add(player);
         gameObjects.add(mob);
@@ -72,49 +74,52 @@ public class MainGame {
         int action = event.getAction();
 
         switch (action) {
-            case MotionEvent.ACTION_DOWN:
-            {
-                if((moveButton!=null)&&moveButton.isPressed()) {
-                    player.move = true;
-                    switch (moveButton.getId()) {
-                        case R.id.leftBtn:
-                            attackEffect.setDirection(false);
-                            player.setDirection(false);
-                            player.setPosition(player.getX(), player.getY());
-                            break;
-                        case R.id.rightBtn:
-                            attackEffect.setDirection(true);
-                            player.setDirection(true);
-                            player.setPosition(player.getX(), player.getY());
-                            break;
-                    }
+            case MotionEvent.ACTION_DOWN: {
+                if (player.state != "hit") {
+                    if ((moveButton != null) && moveButton.isPressed()) {
+                        if ((player.behavior == false) || (player.state == "jump")) {
+                            player.move = true;
+                            switch (moveButton.getId()) {
+                                case R.id.leftBtn:
+                                    attackEffect.setDirection(false);
+                                    player.setDirection(false);
+                                    player.setPosition(player.getX(), player.getY());
+                                    break;
+                                case R.id.rightBtn:
+                                    attackEffect.setDirection(true);
+                                    player.setDirection(true);
+                                    player.setPosition(player.getX(), player.getY());
+                                    break;
+                            }
+                        }
 
-                }
-                if((behaviorBtn!=null)&&behaviorBtn.isPressed()){
-                    if(player.behavior){
-                        break;
                     }
-                    player.setIndex();
-                    if(player.move){
-                        if((player.state == "roll")||(player.state == "attack")) {
-                            player.move = false;
+                    if ((behaviorBtn != null) && behaviorBtn.isPressed()) {
+                        if (player.behavior) {
+                            break;
+                        }
+                        player.setIndex();
+                        if (player.move) {
+                            if ((player.state == "roll") || (player.state == "attack")) {
+                                player.move = false;
+                            }
+                        }
+                        player.behavior = true;
+                        switch (behaviorBtn.getId()) {
+                            case R.id.attackBtn:
+                                attackEffect.setIndex();
+                                player.attack();
+                                break;
+                            case R.id.jumpBtn:
+                                player.jump();
+                                break;
+                            case R.id.rollBtn:
+                                player.roll();
+                                break;
                         }
                     }
-                    player.behavior = true;
-                    switch (behaviorBtn.getId()){
-                        case R.id.attackBtn:
-                            attackEffect.setIndex();
-                            player.attack();
-                            break;
-                        case R.id.jumpBtn:
-                            player.jump();
-                            break;
-                        case R.id.rollBtn:
-                            player.roll();
-                            break;
-                    }
+                    return true;
                 }
-                return true;
             }
             case MotionEvent.ACTION_UP: {
                 if((moveButton == null) ||(!moveButton.isPressed())) {
@@ -145,6 +150,29 @@ public class MainGame {
                 else{
                     if(player.state == "attack"){
                         gobj.draw(canvas);
+                    }
+                }
+            }
+            else{
+                if(gobj instanceof Life){
+                    ((Life) gobj).dstRect.left = 0;
+                    ((Life) gobj).dstRect.top = 0;
+                    ((Life) gobj).dstRect.right = 100;
+                    ((Life) gobj).dstRect.bottom = 100;
+
+                    for(int i = 0; i < player.life; i++){
+                        gobj.draw(canvas);
+                        ((Life) gobj).dstRect.offset(100, 0);
+                    }
+
+                    ((Life) gobj).dstRect.left = Metrics.width - 100;
+                    ((Life) gobj).dstRect.top = 0;
+                    ((Life) gobj).dstRect.right = Metrics.width;
+                    ((Life) gobj).dstRect.bottom = 100;
+
+                    for(int i = 0; i < mob.life; i++){
+                        gobj.draw(canvas);
+                        ((Life) gobj).dstRect.offset(-100, 0);
                     }
                 }
             }
@@ -207,7 +235,7 @@ public class MainGame {
                     }
                     Mob mob = (Mob) o4;
                     if (CollisionHelper.collides(ae, mob)) {
-                        if(player.state == "attack") {
+                        if((player.state == "attack")&&(ae.returnIdex()==1)) {
                             mob.hit();
                         }
 //                    remove(bullet);
