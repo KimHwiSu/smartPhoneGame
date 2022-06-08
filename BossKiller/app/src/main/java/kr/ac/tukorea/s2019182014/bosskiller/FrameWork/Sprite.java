@@ -9,7 +9,7 @@ import kr.ac.tukorea.s2019182014.bosskiller.R;
 
 public class Sprite implements GameObject {
     protected Bitmap bitmap;
-    protected RectF dstRect = new RectF();
+    public RectF dstRect = new RectF();
     protected Matrix matrix = new Matrix();
     protected Bitmap reverseBitmap;
 

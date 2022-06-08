@@ -174,13 +174,10 @@ public class Player extends AnimSprite implements BoxCollidable {
         changeFrameCount(behaviorFrame);
     }
 
-
-
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
     }
-
 
     public void setPosition(float x, float y){
         this.x = x;

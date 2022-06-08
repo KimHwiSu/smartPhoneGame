@@ -22,6 +22,7 @@ public class MainGame {
     private static final String TAG = MainGame.class.getSimpleName();
     private static MainGame singleton;
     private Paint collisionPaint;
+    private MobAttackEffect mobAE;
 
     public static MainGame getInstance() {
         if (singleton == null) {
@@ -53,8 +54,11 @@ public class MainGame {
         float fx = Metrics.width / 2;
         float fy = Metrics.height - Metrics.size(R.dimen.player_y_offset);
         player = new Player(fx, fy);
-        mob = new Mob(Metrics.width - 1, fy, player);
+        mob = new Mob(Metrics.width - 800, fy, player);
+        mobAE = new MobAttackEffect(fx, fy, mob);
         attackEffect = new SwordEnergy(player);
+
+        gameObjects.add(mobAE);
         gameObjects.add(player);
         gameObjects.add(mob);
         gameObjects.add(attackEffect);
@@ -130,16 +134,17 @@ public class MainGame {
     public void draw(Canvas canvas) {
         for (GameObject gobj : gameObjects) {
             if (gobj instanceof BoxCollidable) {
-                if(!(gobj instanceof SwordEnergy)) {
+                if((!(gobj instanceof SwordEnergy))&&(!(gobj instanceof MobAttackEffect))) {
                     gobj.draw(canvas);
-                    RectF box = ((BoxCollidable) gobj).getBoundingRect();
-                    canvas.drawRect(box, collisionPaint);
+                }
+                else if((gobj instanceof MobAttackEffect)){
+                    if(mob.state == "attack1"){
+                        gobj.draw(canvas);
+                    }
                 }
                 else{
                     if(player.state == "attack"){
                         gobj.draw(canvas);
-                        RectF box = ((BoxCollidable) gobj).getBoundingRect();
-                        canvas.drawRect(box, collisionPaint);
                     }
                 }
             }
@@ -174,39 +179,51 @@ public class MainGame {
             Player player = (Player) o1;
             //boolean removed = false;
             for (GameObject o2 : gameObjects) {
-                if (!(o2 instanceof Mob)) {
+                if (!(o2 instanceof MobAttackEffect)) {
                     continue;
                 }
-                Mob mob = (Mob) o2;
-                if (CollisionHelper.collides(player, mob)) {
-                    if((player.state != "roll")&&(player.state != "hit")) {
+                MobAttackEffect mobAE = (MobAttackEffect) o2;
+                if (CollisionHelper.collides(player, mobAE)) {
+                    if((player.state != "roll")&&(player.state != "hit")&&(mob.state=="attack1")) {
                         player.setIndex();
                         player.hit();
-                        Log.d(TAG, "h");
 //                    remove(bullet);
 //                    remove(player);
 //                    removed = true;
                         break;
                     }
                 }
-                for(GameObject o3 : gameObjects){
-                    if (!(o3 instanceof SwordEnergy)){
+
+            }
+            for(GameObject o3 : gameObjects){
+                if (!(o3 instanceof SwordEnergy)){
+                    continue;
+                }
+                SwordEnergy ae = (SwordEnergy) o3;
+
+                for(GameObject o4 : gameObjects){
+                    if(!(o4 instanceof Mob)){
                         continue;
                     }
-                    SwordEnergy ae = (SwordEnergy) o3;
-                    if(CollisionHelper.collides(mob, ae)){
-                        if(player.state == "attack"){
+                    Mob mob = (Mob) o4;
+                    if (CollisionHelper.collides(ae, mob)) {
+                        if(player.state == "attack") {
                             mob.hit();
                         }
+//                    remove(bullet);
+//                    remove(player);
+//                    removed = true;
+                            break;
                     }
                 }
             }
+        }
 //            if (removed) {
 //                continue;
 //            }
             // check enemy vs fighter
-        }
     }
+
 //
     public void add(GameObject gameObject) {
         GameView.view.post(new Runnable() {

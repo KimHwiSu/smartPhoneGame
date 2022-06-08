@@ -22,10 +22,6 @@ public class SwordEnergy extends AnimSprite implements BoxCollidable {
         this.p = p;
         collisionBox.set(dstRect);
     }
-    private void changeRange(float dx, float dy){
-        dstRect.offset(dx, dy);
-        collisionBox.offset(dx, dy);
-    }
     @Override
     public void update() {
         super.update();
@@ -37,7 +33,7 @@ public class SwordEnergy extends AnimSprite implements BoxCollidable {
             collisionBox.inset(200, 131);
             collisionBox.offset(-30, 32);
         }
-        else{
+        else {
             this.x = p.x - 75.f;
             dstRect.left = this.x - this.radius;
             dstRect.right = this.x + this.radius;
