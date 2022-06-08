@@ -12,6 +12,7 @@ import java.security.Key;
 import java.util.ArrayList;
 
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BoxCollidable;
+import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.CollisionHelper;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.GameObject;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.GameView;
 import kr.ac.tukorea.s2019182014.bosskiller.FrameWork.Metrics;
@@ -31,13 +32,19 @@ public class MainGame {
     private static final int BALL_COUNT = 10;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private Player player;
+    private Mob mob;
+    private SwordEnergy attackEffect;
     public float frameTime;
+    protected boolean showsBoxCollidables;
 
     public static void clear() {
         singleton = null;
     }
 
     public void init() {
+        collisionPaint = new Paint();
+        collisionPaint.setStyle(Paint.Style.STROKE);
+        collisionPaint.setColor(Color.RED);
 
         gameObjects.clear();
 
@@ -46,7 +53,11 @@ public class MainGame {
         float fx = Metrics.width / 2;
         float fy = Metrics.height - Metrics.size(R.dimen.player_y_offset);
         player = new Player(fx, fy);
+        mob = new Mob(Metrics.width - 1, fy, player);
+        attackEffect = new SwordEnergy(player);
         gameObjects.add(player);
+        gameObjects.add(mob);
+        gameObjects.add(attackEffect);
 
         collisionPaint = new Paint();
         collisionPaint.setStyle(Paint.Style.STROKE);
@@ -63,24 +74,32 @@ public class MainGame {
                     player.move = true;
                     switch (moveButton.getId()) {
                         case R.id.leftBtn:
+                            attackEffect.setDirection(false);
                             player.setDirection(false);
                             player.setPosition(player.getX(), player.getY());
                             break;
                         case R.id.rightBtn:
+                            attackEffect.setDirection(true);
                             player.setDirection(true);
                             player.setPosition(player.getX(), player.getY());
                             break;
                     }
 
                 }
-                else if((behaviorBtn!=null)&&behaviorBtn.isPressed()){
+                if((behaviorBtn!=null)&&behaviorBtn.isPressed()){
+                    if(player.behavior){
+                        break;
+                    }
                     player.setIndex();
                     if(player.move){
-                        player.move = false;
+                        if((player.state == "roll")||(player.state == "attack")) {
+                            player.move = false;
+                        }
                     }
                     player.behavior = true;
                     switch (behaviorBtn.getId()){
                         case R.id.attackBtn:
+                            attackEffect.setIndex();
                             player.attack();
                             break;
                         case R.id.jumpBtn:
@@ -94,8 +113,10 @@ public class MainGame {
                 return true;
             }
             case MotionEvent.ACTION_UP: {
-                if (player.move) {
-                    player.move = false;
+                if((moveButton == null) ||(!moveButton.isPressed())) {
+                    if (player.move) {
+                        player.move = false;
+                    }
                 }
             }
             return true;
@@ -108,7 +129,28 @@ public class MainGame {
 
     public void draw(Canvas canvas) {
         for (GameObject gobj : gameObjects) {
-            gobj.draw(canvas);
+            if (gobj instanceof BoxCollidable) {
+                if(!(gobj instanceof SwordEnergy)) {
+                    gobj.draw(canvas);
+                    RectF box = ((BoxCollidable) gobj).getBoundingRect();
+                    canvas.drawRect(box, collisionPaint);
+                }
+                else{
+                    if(player.state == "attack"){
+                        gobj.draw(canvas);
+                        RectF box = ((BoxCollidable) gobj).getBoundingRect();
+                        canvas.drawRect(box, collisionPaint);
+                    }
+                }
+            }
+        }
+        if (showsBoxCollidables) {
+            drawBoxCollidables(canvas);
+        }
+    }
+
+    public void drawBoxCollidables(Canvas canvas) {
+        for (GameObject gobj : gameObjects) {
             if (gobj instanceof BoxCollidable) {
                 RectF box = ((BoxCollidable) gobj).getBoundingRect();
                 canvas.drawRect(box, collisionPaint);
@@ -121,36 +163,50 @@ public class MainGame {
         for (GameObject gobj : gameObjects) {
             gobj.update();
         }
-
-        //checkCollision();
+        checkCollision();
     }
 
-    /*private void checkCollision() {
+    private void checkCollision() {
         for (GameObject o1 : gameObjects) {
             if (!(o1 instanceof Player)) {
                 continue;
             }
             Player player = (Player) o1;
-            boolean removed = false;
+            //boolean removed = false;
             for (GameObject o2 : gameObjects) {
-                if (!(o2 instanceof Bullet)) {
+                if (!(o2 instanceof Mob)) {
                     continue;
                 }
-                Bullet bullet = (Bullet) o2;
-                if (CollisionHelper.collides(player, bullet)) {
-                    Log.d(TAG, "Collision !!");
-                    remove(bullet);
-                    remove(player);
-                    removed = true;
-                    break;
+                Mob mob = (Mob) o2;
+                if (CollisionHelper.collides(player, mob)) {
+                    if((player.state != "roll")&&(player.state != "hit")) {
+                        player.setIndex();
+                        player.hit();
+                        Log.d(TAG, "h");
+//                    remove(bullet);
+//                    remove(player);
+//                    removed = true;
+                        break;
+                    }
+                }
+                for(GameObject o3 : gameObjects){
+                    if (!(o3 instanceof SwordEnergy)){
+                        continue;
+                    }
+                    SwordEnergy ae = (SwordEnergy) o3;
+                    if(CollisionHelper.collides(mob, ae)){
+                        if(player.state == "attack"){
+                            mob.hit();
+                        }
+                    }
                 }
             }
-            if (removed) {
-                continue;
-            }
+//            if (removed) {
+//                continue;
+//            }
             // check enemy vs fighter
         }
-    }*/
+    }
 //
     public void add(GameObject gameObject) {
         GameView.view.post(new Runnable() {

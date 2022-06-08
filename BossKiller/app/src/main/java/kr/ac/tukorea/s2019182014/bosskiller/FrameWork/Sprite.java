@@ -11,9 +11,7 @@ public class Sprite implements GameObject {
     protected Bitmap bitmap;
     protected RectF dstRect = new RectF();
     protected Matrix matrix = new Matrix();
-
     protected Bitmap reverseBitmap;
-
 
     protected float x, y, radius;
     public boolean isReverse = false;
@@ -49,11 +47,15 @@ public class Sprite implements GameObject {
         dstRect.set(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
     }
 
+    public float returnRadius(){
+        return radius;
+    }
+
+
     public void changeBitmap(int bitmapId){
         Bitmap bit = BitmapPool.get(bitmapId);
         bitmap = bit;
         reverseBitmap = reverseBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-
     }
 
     public void changeDirect(){

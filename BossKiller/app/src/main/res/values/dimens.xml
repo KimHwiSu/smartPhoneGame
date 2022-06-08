@@ -3,4 +3,6 @@
     <dimen name="player_speed">30dp</dimen>
     <dimen name="player_radius">700dp</dimen>
     <dimen name="player_y_offset">100dp</dimen>
+    <dimen name="player_jump_power">400dp</dimen>
+    <dimen name="player_gravity">900dp</dimen>
 </resources>

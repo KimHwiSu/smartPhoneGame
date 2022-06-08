@@ -17,40 +17,45 @@
     <kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView
         android:id="@+id/leftBtn"
         style="@style/BUTTON_STYLE"
+        android:layout_gravity="left|bottom"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="300dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/btn_left"
         android:onClick="leftBtn"></kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView>
 
     <kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView
         android:id="@+id/rightBtn"
         style="@style/BUTTON_STYLE"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="300dp"
+        android:layout_gravity="left|bottom"
+        android:layout_marginLeft="120dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/btn_right"
         android:onClick="rightBtn"></kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView>
 
     <kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView
         android:id="@+id/jumpBtn"
         style="@style/BUTTON_STYLE"
-        android:layout_marginLeft="600dp"
-        android:layout_marginTop="220dp"
+        android:layout_gravity="right|bottom"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="120dp"
         android:background="@drawable/btn_jump"
         android:onClick="jumpBtn"></kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView>
 
     <kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView
         android:id="@+id/attackBtn"
         style="@style/BUTTON_STYLE"
-        android:layout_marginLeft="520dp"
-        android:layout_marginTop="300dp"
+        android:layout_gravity="right|bottom"
+        android:layout_marginRight="120dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/btn_attack"
         android:onClick="attackBtn"></kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView>
 
     <kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView
         android:id="@+id/rollBtn"
         style="@style/BUTTON_STYLE"
-        android:layout_marginLeft="600dp"
-        android:layout_marginTop="300dp"
+        android:layout_gravity="right|bottom"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/btn_roll"
         android:onClick="rollBtn"></kr.ac.tukorea.s2019182014.bosskiller.FrameWork.BtnView>
 </FrameLayout>
